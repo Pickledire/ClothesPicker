@@ -1,23 +1,10 @@
+from dataclasses import asdict
 import random
 
 weather_labels = ["Rainy", "Sunny", "Cloudy", "Snowy", "Windy", "Humid"]
 temperature_labels = ["Warm", "Cold", "Hot", "Cool"]
 gender_labels = ["Male", "Female"]
 
-synonyms = {
-    "Rainy": ["Rainy", "Rain", "Rainy Day", "Rainy Weather", "Rainy Day Weather"],
-    "Sunny": ["Sunny", "Sun", "Sunny Day", "Sunny Weather", "Sunny Day Weather"],
-    "Cloudy": ["Cloudy", "Cloud", "Cloudy Day", "Cloudy Weather", "Cloudy Day Weather"],
-    "Snowy": ["Snowy", "Snow", "Snowy Day", "Snowy Weather", "Snowy Day Weather"],
-    "Windy": ["Windy", "Wind", "Windy Day", "Windy Weather", "Windy Day Weather"],
-    "Humid": ["Humid", "Humidity", "Humid Day", "Humid Weather", "Humid Day Weather"],
-    "Warm": ["Warm", "Warm Day", "Warm Weather", "Warm Day Weather"],
-    "Cold": ["Cold", "Cold Day", "Cold Weather", "Cold Day Weather"],
-    "Hot": ["Hot", "Hot Day", "Hot Weather", "Hot Day Weather"],
-    "Cool": ["Cool", "Cool Day", "Cool Weather", "Cool Day Weather"],
-    "Male": ["Male", "Man", "Male Day", "Male Weather", "Male Day Weather"],
-    "Female": ["Female", "Woman", "Female Day", "Female Weather", "Female Day Weather"],
-}   
 
 class Clothing:
     def __init__(self, name, price, color, type, weather_labels=None, temperature_labels=None, gender_labels=None):
@@ -117,6 +104,24 @@ RULES = [
     {"weather_labels" : "Humid", "temperature_labels": "Hot", "gender_labels": "Female", "outfit": [Tank_top, Shorts, Sandals, Sun_hat]},
     {"weather_labels" : "Humid", "temperature_labels": "Cool", "gender_labels": "Male", "outfit": [Long_sleeve, Jeans, Casual_sneakers, Scarf_light]},
     {"weather_labels" : "Humid", "temperature_labels": "Cool", "gender_labels": "Female", "outfit": [Long_sleeve, Jeans, Casual_sneakers, Scarf_light]},
+    # Snowy
+    {"weather_labels" : "Snowy", "temperature_labels": "Warm", "gender_labels": "Male", "outfit": [Tshirt, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Warm", "gender_labels": "Female", "outfit": [Tshirt, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Cold", "gender_labels": "Male", "outfit": [Long_sleeve, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Cold", "gender_labels": "Female", "outfit": [Long_sleeve, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Hot", "gender_labels": "Male", "outfit": [Tshirt, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Hot", "gender_labels": "Female", "outfit": [Tshirt, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Cool", "gender_labels": "Male", "outfit": [Long_sleeve, Jeans, Snow_boots, Umbrella]},
+    {"weather_labels" : "Snowy", "temperature_labels": "Cool", "gender_labels": "Female", "outfit": [Long_sleeve, Jeans, Snow_boots, Umbrella]},
+    # Cloudy
+    {"weather_labels" : "Cloudy", "temperature_labels": "Warm", "gender_labels": "Male", "outfit": [Tshirt, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Warm", "gender_labels": "Female", "outfit": [Tshirt, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Cold", "gender_labels": "Male", "outfit": [Long_sleeve, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Cold", "gender_labels": "Female", "outfit": [Long_sleeve, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Hot", "gender_labels": "Male", "outfit": [Tshirt, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Hot", "gender_labels": "Female", "outfit": [Tshirt, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Cool", "gender_labels": "Male", "outfit": [Long_sleeve, Jeans, Running_shoes, Scarf_light]},
+    {"weather_labels" : "Cloudy", "temperature_labels": "Cool", "gender_labels": "Female", "outfit": [Long_sleeve, Jeans, Running_shoes, Scarf_light]},
 ]
 
 
@@ -126,27 +131,52 @@ user_weather = input("What is the weather today? (Rainy/Sunny/Cloudy/Snowy/Windy
 user_temperature = input("What is the temperature today? (Warm/Cold/Hot/Cool): ").strip().title()
 user_gender = input("What is your gender? (Male/Female): ").strip().title()
 
+synonyms = {
+    "Rainy": ["Rainy", "Rain", "rain", "rainy", "Drizzle", "drizzle", "Downpour", "downpour", "Precipitation", "precipitation", "Wet", "wet", "Stormy", "stormy", "Showers", "showers", "Rainfall", "rainfall", "Pouring", "pouring"],
+    "Sunny": ["Sunny", "Sun", "sun", "sunny", "Shining", "shining", "Shine", "shine", "Bright", "bright", "Clear", "clear", "Radiant", "radiant", "Sunshine", "sunshine", "Sunlit", "sunlit", "Luminous", "luminous"],
+    "Cloudy": ["Cloudy", "Cloud", "cloud", "cloudy", "Overcast", "overcast", "Gloomy", "gloomy", "Foggy", "foggy", "Hazy", "hazy", "Misty", "misty", "Dull", "dull"],
+    "Snowy": ["Snowy", "Snow", "snow", "snowy", "Wintry", "wintry", "Blizzard", "blizzard", "Frosty", "frosty", "Icy", "icy", "Frigid", "frigid", "Freezing", "freezing", "Arctic", "arctic"],
+    "Windy": ["Windy", "Wind", "wind", "windy", "Breezy", "breezy", "Gusty", "gusty", "Blustery", "blustery", "Stormy", "stormy", "Tempestuous", "tempestuous"],
+    "Humid": ["Humid", "Humidity", "humidity", "humid", "Muggy", "muggy", "Sticky", "sticky", "Moist", "moist", "Damp", "damp", "Sultry", "sultry", "Steamy", "steamy"],
+    "Warm": ["Warm", "warm", "Mild", "mild", "Temperate", "temperate", "Pleasant", "pleasant", "Balmy", "balmy", "Moderate", "moderate", "Lukewarm", "lukewarm"],
+    "Cold": ["Cold", "cold", "Chilly", "chilly", "Freezing", "freezing", "Frigid", "frigid", "Icy", "icy", "Frosty", "frosty", "Cool", "cool", "Nippy", "nippy"],
+    "Hot": ["Hot", "hot", "Scorching", "scorching", "Sweltering", "sweltering", "Boiling", "boiling", "Sizzling", "sizzling", "Torrid", "torrid", "Blazing", "blazing", "Sultry", "sultry"],
+    "Cool": ["Cool", "cool", "Chilly", "chilly", "Crisp", "crisp", "Refreshing", "refreshing", "Mild", "mild", "Moderate", "moderate", "Brisk", "brisk"],
+    "Male": ["Male", "male", "Man", "man", "Guy", "guy", "Boy", "boy", "Masculine", "masculine", "Gentleman", "gentleman", "Fellow", "fellow"],
+    "Female": ["Female", "female", "Woman", "woman", "Girl", "girl", "Lady", "lady", "Feminine", "feminine", "Gal", "gal", "Miss", "miss"],
+}   
 
-def Match_rules(rules, user_weather, user_temperature, user_gender ):
+def Match_synonyms(synonyms, user_input):
+    for label, words in synonyms.items():
+        if user_input in words:
+            return label
+    return user_input
+
+def Match_rules(rules, user_weather, user_temperature, user_gender, synonyms):
+    user_weather = Match_synonyms(synonyms, user_weather)
+    user_temperature = Match_synonyms(synonyms, user_temperature)
+    user_gender = Match_synonyms(synonyms, user_gender)
+
     best_score = 0
     best_outfit = []
+
     for rule in rules:
         if rule["weather_labels"] == user_weather and rule["temperature_labels"] == user_temperature and rule["gender_labels"] == user_gender:
             return rule["outfit"]
         else:
             score = 0
-            if rule["weather_labels"] == user_weather:
+            if rule["weather_labels"] == Match_synonyms(synonyms, user_weather):
                 score += 1
-            if rule["temperature_labels"] == user_temperature:
+            if rule["temperature_labels"] == Match_synonyms(synonyms, user_temperature):
                 score += 1
-            if rule["gender_labels"] == user_gender:
+            if rule["gender_labels"] == Match_synonyms(synonyms, user_gender):
                 score += 1
             if score > best_score:
                 best_score = score
                 best_outfit = rule["outfit"]
     return best_outfit
 
-outfit = Match_rules(RULES, user_weather, user_temperature, user_gender)
+outfit = Match_rules(RULES, user_weather, user_temperature, user_gender, synonyms)
 if not outfit:
     print("No matching outfit found.")
 else:
